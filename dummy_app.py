@@ -211,16 +211,15 @@ with (gr.Blocks() as demo):
 
             # Add the feedback buttons
             with gr.Row():
-                model_a_better_button = gr.Button("Model A is better ✔️")
-                model_b_better_button = gr.Button("Model B is better ✔️")
+                model_a_better_button = gr.Button("Model A is better 👈")
                 tie_button = gr.Button("Tie 🤝")
-                both_bad_button = gr.Button("Both are bad ❌")
+                model_b_better_button = gr.Button("Model B is better 👉")
 
             # Feedback button actions
             model_a_better_button.click(fn=lambda: set_feedback("Model A is better"), inputs=[], outputs=[])
             model_b_better_button.click(fn=lambda: set_feedback("Model B is better"), inputs=[], outputs=[])
             tie_button.click(fn=lambda: set_feedback("Tie"), inputs=[], outputs=[])
-            both_bad_button.click(fn=lambda: set_feedback("Both are bad"), inputs=[], outputs=[])
+            # both_bad_button.click(fn=lambda: set_feedback("Both are bad"), inputs=[], outputs=[])
 
             # Feedback text field
             user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
