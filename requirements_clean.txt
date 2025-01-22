@@ -1,4 +1,0 @@
-gradio
-python-dotenv
-openai
-groq
