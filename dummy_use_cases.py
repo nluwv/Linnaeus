@@ -22,50 +22,21 @@ vereenvoudigen_prompt = ("Vereenvoudig complexe tekst: Een gebruiker voert een m
 
 
 # Use case answers - vereenvoudigen
-groq_answer_vereenvoudigen = """Het is moeilijk om de economie duurzamer te maken zonder dat bedrijven daar last van hebben. \
-Internationale afspraken zoals het Klimaatakkoord geven richtlijnen, maar veel bedrijven zijn terughoudend. Ze willen hun \
-winst op korte termijn beschermen, terwijl er op lange termijn actie nodig is om klimaatverandering tegen te gaan. Ook \
-burgers willen duurzaamheid, maar ze vinden de hogere kosten vaak een probleem.\\
+groq_answer_vereenvoudigen = """Een groot taalmodel (Large Language Model, LLM) is een computerprogramma dat tekst kan schrijven over allerlei onderwerpen. Dit is anders dan gewone taalmodellen, die maar één specifiek doel hebben. Het grote taalmodel leert door veel tekst van internet en andere bronnen te bestuderen, zodat het verbanden kan leggen tussen woorden. Daardoor lijkt het soms alsof je een echt gesprek voert. Het model kan tekst maken voor bijvoorbeeld boeken, brieven, vertalingen of zelfs computercodes.
 
-Nieuwe technologieën zijn belangrijk om de economie duurzamer te maken. Denk aan groene waterstof of batterijen die energie \
-opslaan. Maar deze technologieën zijn nog duur door hoge kosten en weinig mogelijkheden om ze grootschalig te gebruiken. \
-Overheden, bedrijven en onderzoekers moeten samenwerken om dit te verbeteren en een balans te vinden tussen economie en het \
-klimaat."""
+Bij het maken van teksten kijkt het model naar eerdere woorden en de context. Zo bepaalt het stap voor stap wat het volgende woord moet zijn. Het model begrijpt zelf niet echt wat het schrijft en kan soms fouten maken of onzin produceren, wat "hallucinatie" wordt genoemd. Ook hangt de kwaliteit van de output af van de informatie waarmee het model getraind is. Als het verkeerde of nepinformatie leert, kan het die ook doorgeven. Mensen moeten daarom helpen om fouten en vooroordelen in de training te verbeteren."""
 
-gpt_answer_vereenvoudigen = """Het is lastig om economie en duurzaamheid samen te laten werken. Hoewel het Klimaatakkoord helpt, \
-zijn veel bedrijven en burgers huiverig. Bedrijven denken vooral aan hun winst, terwijl er op lange termijn iets moet worden \
-gedaan aan klimaatverandering. Burgers willen ook verduurzaming, maar niet als het veel meer geld kost.\\
+gpt_answer_vereenvoudigen = """Een groot taalmodel, ook wel LLM genoemd, is een programma dat verschillende soorten teksten kan maken. Het leert dit door grote hoeveelheden tekst, zoals boeken en websites, te analyseren. Hierdoor lijkt het model soms op een echte gesprekspartner. Het kan teksten schrijven zoals verhalen, vertalingen, of zelfs programmeercodes.
 
-Nieuwe technologieën zoals waterstof en batterijen kunnen helpen. Toch worden ze nog niet veel gebruikt omdat ze duur zijn en \
-er weinig infrastructuur is. Samenwerking tussen de overheid, bedrijven en onderzoekers is nodig om deze problemen op te lossen. \
-Zo kunnen we zorgen voor een betere balans tussen geld verdienen en het milieu beschermen."""
+Het model bepaalt wat het volgende woord moet zijn door te kijken naar eerdere woorden en de vraag die je stelt. Het begrijpt echter niet echt wat het schrijft en maakt soms fouten. Dit heet "hallucinatie". Als het model foutieve informatie heeft geleerd, kan het ook foutieve teksten produceren. Daarom worden deze modellen gecontroleerd en verbeterd door mensen, zodat de antwoorden beter en betrouwbaarder worden."""
 
-mistral_answer_vereenvoudigen = """Het combineren van een sterke economie met zorg voor het klimaat is lastig. Afspraken zoals \
-het Klimaatakkoord helpen, maar bedrijven denken vaak eerst aan hun eigen winst. Ook burgers willen dat er iets aan het klimaat \
-wordt gedaan, maar ze vinden het moeilijk als dat meer geld kost.\\
+mistral_answer_vereenvoudigen = """Een groot taalmodel (LLM) is een computerprogramma dat helpt bij het maken van verschillende teksten. Dit kan bijvoorbeeld een brief, een boek of een samenvatting zijn. Het model leert door grote hoeveelheden tekst van internet te lezen en verbanden tussen woorden te vinden. Zo lijkt het alsof je met een echte persoon praat.
 
-Technologie kan een oplossing bieden, zoals waterstof of betere batterijen om energie op te slaan. Maar deze oplossingen zijn nu \
-nog duur en moeilijk op grote schaal te gebruiken. Om dit te verbeteren, moeten de overheid, bedrijven en wetenschappers \
-samenwerken. Alleen zo kunnen we economie en duurzaamheid in balans brengen."""
+Het model voorspelt elk woord op basis van eerdere woorden en de vraag die je stelt. Maar het begrijpt niet wat het zegt. Soms maakt het fouten of schrijft het onzin; dit heet "hallucineren". Ook kan het foutieve informatie overnemen als de trainingsdata niet klopt. Daarom controleren mensen de output en passen ze de training aan om het model betrouwbaarder te maken."""
 
 # Use case answers - samenvatten
-groq_answer_samenvatten = """In mijn stad zijn veel veranderingen, zoals nieuwe gebouwen en meer groen. Mensen vinden het fijn om \
-in een groene stad te wonen, maar de huurprijzen zijn wel gestegen, wat het moeilijk maakt voor sommige bewoners om te blijven. De \
-gemeente probeert betaalbare woningen te bouwen, maar dit duurt nog wel even.\\
+groq_answer_samenvatten = """Een groot taalmodel (LLM) kan teksten genereren voor verschillende toepassingen, zoals brieven, boeken of vertalingen. Het model leert door grote hoeveelheden tekst te analyseren en verbanden tussen woorden te leggen. Het genereert woorden stap voor stap, gebaseerd op context. Hoewel het model geen echt begrip heeft, kan het toch op mensen lijken in gesprekken. Problemen zoals fouten of hallucinaties komen voor, vooral als de trainingsdata foutief of onvolledig is. Mensen moeten de trainingsdata controleren en verbeteren om betere en betrouwbaardere resultaten te krijgen."""
 
-Sommige mensen vinden de veranderingen te snel gaan en vinden dat de oude sfeer verloren gaat. Toch gelooft de gemeente dat deze \
-verbeteringen uiteindelijk goed zijn voor iedereen."""
+gpt_answer_samenvatten = """"Grote taalmodellen (LLM’s) zijn computerprogramma’s die teksten kunnen genereren voor verschillende doelen. Ze leren van grote hoeveelheden tekst en bepalen elk volgend woord op basis van de context. Ze begrijpen zelf niet wat ze schrijven en maken soms fouten of produceren onjuiste informatie. De kwaliteit van hun output hangt sterk af van de data waarmee ze zijn getraind. Daarom is menselijke controle nodig om fouten, vooroordelen en onnauwkeurigheden in de training te corrigeren."""
 
-gpt_answer_samenvatten = """"De stad heeft veel nieuwe gebouwen en meer parken gekregen, maar daardoor zijn de huurprijzen gestegen. \
-Dit maakt het lastig voor sommige mensen om daar te blijven wonen. De gemeente bouwt nu betaalbare huizen om dit probleem op te lossen, \
-maar het kost tijd.\\
-
-Niet iedereen is blij met de veranderingen. Sommige mensen vinden dat de oude sfeer verloren gaat, maar de gemeente blijft proberen \
-de stad beter te maken voor iedereen."""
-
-mistral_answer_samenvatten = """In de stad waar ik woon, zijn er veel veranderingen: nieuwe gebouwen en meer groen, wat de stad \
-gezelliger maakt. Maar de huurprijzen zijn ook gestegen, wat voor sommige mensen een probleem is. De gemeente werkt aan betaalbare \
-woningen om dit op te lossen, maar het duurt lang.\\
-
-Veel mensen vinden dat de stad te snel verandert, en dat de sfeer van de oude wijken verloren gaat. Toch blijft de gemeente doorgaan \
-met de verbeteringen, omdat ze denken dat dit uiteindelijk goed is voor iedereen."""
+mistral_answer_samenvatten = """Een groot taalmodel (LLM) kan teksten maken door veel data te analyseren. Het kiest het meest logische woord op basis van eerdere woorden en de vraag van de gebruiker. Het model begrijpt geen betekenis en kan fouten of onzin genereren, wat "hallucinatie" wordt genoemd. De kwaliteit van de output hangt af van de trainingsdata, die door mensen gecontroleerd en verbeterd moet worden om onnauwkeurigheden te vermijden."""
