@@ -1,4 +1,5 @@
 import gradio as gr
+import pandas as pd
 from Database import Database
 from dummy_LLM import LLMManager
 from usecase_text import (Usecase_description_samenvatten,
@@ -162,7 +163,65 @@ with (gr.Blocks() as demo):
     with gr.Tabs() as tabs:
 
         # First tab for selecting the use case
-        with gr.TabItem(" Select Usecase", id=0):
+        with gr.TabItem(" Select Usecase", id="Select_Usecases"):
+            
+            df = pd.DataFrame({
+            "Titel": ["Samenvatten", "Vereenvoudigen", "Classificatie", "Standaardiseren", "Doelgroep-herschrijven", "Brainstorming", "Proofreading", "Metadateren"],
+            "Eigenaar": ["A", "A", "B", "A", "C", "B", "D", "C"],
+            "Lijn": ["2", "1", "2", "2,1", "2,1", "2", "1,2", "2"],
+            "Spec": [1, 1, 1, 1, 2, 1, 2, 3],
+            "Type": ["Summ", "Rewr", "Extr", "Rewr", "Rewr", "Gene", "Ana", "Extr"],
+            "Impact": [2, 3, 3, 3, 3, 2, 2, 3],
+            "Sensitiviteit": ["S", "S", "S", "S", "M", "M", "S", "L"],
+            "Nauwkeurigheid": ["M", "L", "L", "M", "M", "S", "M", "XL"],
+            "U": [5, 4, 0, 0, 0, 0, 0, 0]
+            })
+
+            # Filter functions
+            def sort_hot(df):
+                return df.sort_values(by=["Impact", "Sensitiviteit"], ascending=[False, True])
+            def sort_new(df):
+                return df.sort_values(by="U", ascending=False)
+            def sort_trending(df):
+                return df.sort_values(by="Impact", ascending=False)
+            def sort_best(df):
+                return df.sort_values(by=["Nauwkeurigheid", "Impact"], ascending=[False, False])
+            def sort_controversial(df):
+                return df.sort_values(by=["Spec", "Lijn"], ascending=[False, True])
+            def sort_broadness(df):
+                return df.sort_values(by="Lijn", key=lambda x: x.str.count(',') + 1, ascending=False)
+
+            
+            def filter_data(choice):
+                if choice == "-":
+                    return df
+                if choice == "🔥 Hot":
+                    return sort_hot(df)
+                elif choice == "🌱 New":
+                    return sort_new(df)
+                elif choice == "🚀 Trending":
+                    return sort_trending(df)
+                elif choice == "⭐ Best":
+                    return sort_best(df)
+                elif choice == "🤔 Controversial":
+                    return sort_controversial(df)
+                elif choice == "🌐 Broadness":
+                    return sort_broadness(df)
+                else:
+                    return df
+
+            gr.Markdown("### Filter")
+            dropdown = gr.Dropdown(
+                choices=["-", "🔥 Hot", "🌱 New", "🚀 Trending", "⭐ Best", "🤔 Controversial", "🌐 Broadness"], 
+                label="Choose Filter: 🔥 Hot - 🌱 New - 🚀 Trending - ⭐ Best - 🤔 Controversial - 🌐 Broadness"
+            )
+            dataframe_output = gr.DataFrame(df, interactive=True)
+            dropdown.change(fn=filter_data, inputs=dropdown, outputs=dataframe_output)
+
+            gr.Markdown("### Details for Samenvatten")
+            gr.Markdown("Here you can provide specific details about the 'Samenvatten' task, instructions, or insights.")
+
+
             # Display descriptions for the two use cases (Samenvatten and Vereenvoudigen)
             with gr.Row():
                 gr.Textbox(label="Usecase Samenvatten", lines=5, interactive=False, value=Usecase_description_samenvatten)
