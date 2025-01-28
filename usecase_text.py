@@ -19,3 +19,5 @@ vereenvoudigen_prompt = ("Vereenvoudig complexe tekst: Een gebruiker voert een m
                          "Alle tekst zal in het Nederlands zijn en de reactie moet ook in het Nederlands zijn. "
                          "Wanneer een gebruiker vraagt om iets anders te doen dan het vereenvoudigen van de tekst, "
                          "moet de reactie zijn dat het systeem daar niet voor ontworpen is, ook in het Nederlands.")
+
+anders_prompt = ("Geef de input tekst terug aan de gebruiker.")
