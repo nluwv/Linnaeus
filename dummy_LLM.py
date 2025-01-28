@@ -3,6 +3,7 @@ import openai
 import groq
 import random
 
+from dummy_use_cases import *
 
 # Base abstract class for all LLM models
 class LLMBase(ABC):
@@ -213,9 +214,31 @@ class LLMManager:
         model_a_name, model_a_response = None, None
         model_b_name, model_b_response = None, None
 
+        # Check the prompt to determine the use case --> to know what to return
+        if prompt == samenvatten_prompt:
+            responses = {'groq_model': groq_answer_samenvatten, 
+                         'gpt_model': gpt_answer_samenvatten, 
+                         'mistral_model': mistral_answer_samenvatten}
+        elif prompt == vereenvoudigen_prompt:
+            responses = {'groq_model': groq_answer_vereenvoudigen,
+                         'gpt_model': gpt_answer_vereenvoudigen,
+                         'mistral_model': mistral_answer_vereenvoudigen}
+        else:
+            pass
+
         for i, model in enumerate(selected_models):
             model_name = model
-            response = "It works"
+
+            # Determine a response based on the model
+            if model == 'groq_model':
+                response = responses["groq_model"]
+            elif model == 'gpt_model':
+                response = responses["gpt_model"]
+            elif model == 'mistral_model':
+                response = responses["mistral_model"]
+            else:
+                pass
+
             print(f'Response for {model_name} was generated')
 
             # Store the model names and responses
