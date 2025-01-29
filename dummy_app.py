@@ -5,7 +5,9 @@ from dummy_LLM import LLMManager
 from usecase_text import (Usecase_description_samenvatten,
                           Usecase_description_vereenvoudigen,
                           samenvatten_prompt,
-                          vereenvoudigen_prompt)
+                          vereenvoudigen_prompt,
+                          anders_prompt)
+from gradio_leaderboard import Leaderboard
 
 # Instantiate models
 groq_model = "groq_model"
@@ -28,6 +30,7 @@ stored_model_a_response = None
 stored_model_b_response = None
 feedback = None
 stored_user_feedback = None
+list_other_use_cases = ["classificatie", "standaardiseren", "doelgroep-herschrijven", "brainstorming", "proofreading", "metadateren"]
 
 # Function to set the use case
 def set_usecase(value):
@@ -47,7 +50,7 @@ def set_usecase(value):
     """
 
     global prompt, stored_usecase
-
+    
     # Set the use case to "samenvatten" and assign the corresponding prompt
     if value == "samenvatten":
         stored_usecase = "samenvatten"
@@ -57,10 +60,14 @@ def set_usecase(value):
     elif value == "vereenvoudigen":
         stored_usecase = "vereenvoudigen"
         prompt = vereenvoudigen_prompt
-
+    
+    elif value in list_other_use_cases:
+        stored_usecase = "anders"
+        prompt = anders_prompt
+    
     # Raise an error if an unsupported use case is provided
     else:
-        pass
+        raise ValueError("Invalid use case value")
 
     return change_tab(1)
 
@@ -154,6 +161,16 @@ def handle_feedback(feedback_motivation):
         # Confirm successful logging of feedback
         print("Feedback logged successfully.")
 
+def on_select(value, evt: gr.SelectData) -> None:
+    value = pd.DataFrame(value)
+    row_index = evt.index[0]
+    selected_element = value.loc[row_index,"Titel"]
+    set_usecase(selected_element.lower())
+    return f"Wilt u de use case '{selected_element}' selecteren?"
+
+def clear_statement(statement):
+    statement = ""
+    return statement
 
 # Create interface
 with (gr.Blocks() as demo):
@@ -163,34 +180,70 @@ with (gr.Blocks() as demo):
     with gr.Tabs() as tabs:
 
         # First tab for selecting the use case
-        with gr.TabItem("Select Usecase 🔍", id=0):
-            # Display descriptions for the two use cases (Samenvatten and Vereenvoudigen)
+        with gr.TabItem(" Select Usecase", id="Select_Usecases"):
+            link = "https://huggingface.co/"
+            tijdelijk = f'<a target="_blank" href="{link}">{"Samenvatten"}</a>'
+            df = pd.DataFrame({
+            "Titel": ["Samenvatten", "Vereenvoudigen", "Classificatie", "Standaardiseren", "Doelgroep-herschrijven", "Brainstorming", "Proofreading", "Metadateren"],
+            "Eigenaar": ["A", "A", "B", "A", "C", "B", "D", "C"],
+            "Lijn": ["2", "1", "2", "2,1", "2,1", "2", "1,2", "2"],
+            "Spec": [1, 1, 1, 1, 2, 1, 2, 3],
+            "Type": ["Summ", "Rewr", "Extr", "Rewr", "Rewr", "Gene", "Ana", "Extr"],
+            "Impact": [2, 3, 3, 3, 3, 2, 2, 3],
+            "Sensitiviteit": ["S", "S", "S", "S", "M", "M", "S", "L"],
+            "Nauwkeurigheid": ["M", "L", "L", "M", "M", "S", "M", "XL"],
+            "U": [5, 4, 0, 0, 0, 0, 0, 0]
+            })
+
+            # Filter functions
+            def sort_hot(df):
+                return df.sort_values(by=["Impact", "Sensitiviteit"], ascending=[False, True])
+            def sort_new(df):
+                return df.sort_values(by="U", ascending=False)
+            def sort_trending(df):
+                return df.sort_values(by="Impact", ascending=False)
+            def sort_best(df):
+                return df.sort_values(by=["Nauwkeurigheid", "Impact"], ascending=[False, False])
+            def sort_controversial(df):
+                return df.sort_values(by=["Spec", "Lijn"], ascending=[False, True])
+            def sort_broadness(df):
+                return df.sort_values(by="Lijn", key=lambda x: x.str.count(',') + 1, ascending=False)
+
+            
+            def filter_data(choice):
+                if choice == "-":
+                    return df
+                if choice == "🔥 Hot":
+                    return sort_hot(df)
+                elif choice == "🌱 New":
+                    return sort_new(df)
+                elif choice == "🚀 Trending":
+                    return sort_trending(df)
+                elif choice == "⭐ Best":
+                    return sort_best(df)
+                elif choice == "🤔 Controversial":
+                    return sort_controversial(df)
+                elif choice == "🌐 Broadness":
+                    return sort_broadness(df)
+                else:
+                    return df
+
+            gr.Markdown("### Filter")
+            dropdown = gr.Dropdown(
+                choices=["-", "🔥 Hot", "🌱 New", "🚀 Trending", "⭐ Best", "🤔 Controversial", "🌐 Broadness"], 
+                label="Choose Filter: 🔥 Hot - 🌱 New - 🚀 Trending - ⭐ Best - 🤔 Controversial - 🌐 Broadness"
+            )
+            
+            dataframe_output = gr.DataFrame(df, datatype=["markdown"])
+            dropdown.change(fn=filter_data, inputs=dropdown, outputs=dataframe_output)
+            statement = gr.Textbox(label="Use case selecteren")
+            dataframe_output.select(on_select, [dataframe_output], statement)
+
             with gr.Row():
-                gr.Textbox(label="Usecase Samenvatten", lines=5, interactive=False, value=Usecase_description_samenvatten)
-                gr.Textbox(label="Usecase Vereenvoudigen", lines=5, interactive=False, value=Usecase_description_vereenvoudigen)
-
-
-            # Buttons for selecting one of the usecases
-            with gr.Row():
-                select_samenvatten_button = gr.Button("Selecteer 'Samenvatten' use case")
-                select_vereenvoudigen_button = gr.Button("Selecteer 'Vereenvoudigen' use case")
-
-            # Output textbox to display selected prompt
-            selected_prompt = gr.Textbox(label="Selected prompt", lines=2, interactive=False)
-
-            # Button actions to update the selected prompt textbox and use_case_input label
-
-            select_samenvatten_button.click(fn=lambda: set_usecase('samenvatten'), inputs=[],
-                                            outputs=selected_prompt)
-            select_vereenvoudigen_button.click(fn=lambda: set_usecase('vereenvoudigen'), inputs=[],
-                                               outputs=selected_prompt)
-
-
-            # Continue button
-            continue_button = gr.Button("Continue")
-            # Button action to go to the testing tab after pressing continue
-            # continue_button.click(change_tab, gr.Number(1, visible=False), tabs)
-            continue_button.click(fn=lambda: set_usecase('samenvatten'), inputs=[], outputs=tabs)
+                select_use_case_ja_button = gr.Button("Ja")
+                select_use_case_nee_button = gr.Button("Nee")
+            select_use_case_ja_button.click(fn=lambda: set_usecase('samenvatten'), inputs=[], outputs=tabs)
+            select_use_case_nee_button.click(clear_statement, statement, statement)
 
         # Second tab for Testing the usecase
         with gr.TabItem("Test Usecase 🚀", id=1):
@@ -248,6 +301,21 @@ with (gr.Blocks() as demo):
 
         with gr.Tab("Leader board 🏆", id=2):
             leader_board_button = gr.Button("Leader board")
+
+            gr.Markdown("""
+            # 🥇 Leaderboard Component
+            """)
+            Leaderboard(
+                value=df,
+                # select_columns=["Titel", "Eigenaar", "Lijn", "Spec",
+                #     "Type", "Impact", "Sensitiviteit",
+                #     "U"],
+                search_columns=["Titel"],
+                # filter_columns=[],
+                datatype=["markdown"]
+            )
+
+
 
 # Launch the interface
 demo.launch(share=True)
