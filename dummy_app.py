@@ -1,4 +1,5 @@
 import gradio as gr
+import pandas as pd
 from Database import Database
 from dummy_LLM import LLMManager
 from usecase_text import (Usecase_description_samenvatten,
@@ -51,17 +52,17 @@ def set_usecase(value):
     if value == "samenvatten":
         stored_usecase = "samenvatten"
         prompt = samenvatten_prompt
-        return prompt
 
     # Set the use case to "vereenvoudigen" and assign the corresponding prompt
     elif value == "vereenvoudigen":
         stored_usecase = "vereenvoudigen"
         prompt = vereenvoudigen_prompt
-        return prompt
 
     # Raise an error if an unsupported use case is provided
     else:
-        raise ValueError("Invalid use case value")
+        pass
+
+    return change_tab(1)
 
 
 # Function to switch tabs after selecting usecase and pressing the continue button
@@ -188,10 +189,27 @@ with (gr.Blocks() as demo):
             # Continue button
             continue_button = gr.Button("Continue")
             # Button action to go to the testing tab after pressing continue
-            continue_button.click(change_tab, gr.Number(1, visible=False), tabs)
+            # continue_button.click(change_tab, gr.Number(1, visible=False), tabs)
+            continue_button.click(fn=lambda: set_usecase('samenvatten'), inputs=[], outputs=tabs)
 
         # Second tab for Testing the usecase
         with gr.TabItem("Test Usecase 🚀", id=1):
+
+            metadata = [[f"Aangedragen door: {''}", "Lijn: "],
+                        ["Beoordelingen: ", "Specialisatie: "], 
+                        ["Uniek: ", "Type: "],
+                        ["Fors: ", "Impact: "],
+                        ["Best: ", "Sensitiviteit: "]]
+            df_metadata = pd.DataFrame(metadata)
+
+            styled_table = df_metadata.style.hide(axis="index").hide(axis='columns').set_table_styles(
+                [{"selector": "table", "props": [("border", "none")],
+                  "selector": "td", "props": [("padding", "5px")]}]
+            ).to_html()
+
+            with gr.Accordion(label="Omschrijving en metadata", 
+                              open=False):
+                gr.HTML(styled_table)
 
             # Two Text boxes to display the models output
             with gr.Row():
