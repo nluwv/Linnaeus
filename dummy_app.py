@@ -216,8 +216,6 @@ with (gr.Blocks() as demo):
 
         # First tab for selecting the use case
         with gr.TabItem(" Select Usecase 🔎", id="Select_Usecases"):
-            link = "https://huggingface.co/"
-            tijdelijk = f'<a target="_blank" href="{link}">{"Samenvatten"}</a>'
             df = pd.DataFrame({
             "Titel": ["Samenvatten", "Vereenvoudigen", "Classificatie", "Standaardiseren", "Doelgroep-herschrijven", "Brainstorming", "Proofreading", "Metadateren"],
             "Eigenaar": ["A", "A", "B", "A", "C", "B", "D", "C"],
@@ -335,20 +333,71 @@ with (gr.Blocks() as demo):
             submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
 
         with gr.Tab("Leader board 🏆", id=2):
-            leader_board_button = gr.Button("Leader board")
+            with gr.Accordion(label="Samenvatten Leaderboard", open=True):
+                model_links = {
+                    "model_name": ["Llama 3.2-3b", "GPT4o", "Claude Sonet", "Leesplank Noot"],
+                    "links": ["link", "link", "link", "link"]
+                }
+                
+                df_samenvatten_leaderboard = pd.DataFrame({
+                "Model": [f'<a target="_blank" href="{model_links["links"][0]}">{model_links["model_name"][0]}</a>', 
+                            f'<a target="_blank" href="{model_links["links"][1]}">{model_links["model_name"][1]}</a>',
+                            f'<a target="_blank" href="{model_links["links"][2]}">{model_links["model_name"][2]}</a>',
+                            f'<a target="_blank" href="{model_links["links"][3]}">{model_links["model_name"][3]}</a>'],
+                "Win%": [64, 39, 21, 0],
+                "Motivatie": ["readablility, clarity, accuracy, consistency", "accuracy, conciseness, engagement", "conciseness, clarity, comprehensiveness", "lack of accuracy"],
+                "€/M": [0.20, 0.52, 0.13, 0.20],
+                "Token s/s": [624, 238, 1086, 527],
+                "ping (ms)": [75, 105, 40, 75],
+                "Race bias": [42.1, 48.6, 35.6, 41.8],
+                "Political bias": [32.6, 21.4, 19.7, 35.2],
+                "Type": ["Self hosted", "Hosted", "Self hosted", "Self hosted"],
+                })
 
-            gr.Markdown("""
-            # 🥇 Leaderboard Component
-            """)
-            Leaderboard(
-                value=df,
-                # select_columns=["Titel", "Eigenaar", "Lijn", "Spec",
-                #     "Type", "Impact", "Sensitiviteit",
-                #     "U"],
-                search_columns=["Titel"],
-                # filter_columns=[],
-                datatype=["markdown"]
-            )
+                Leaderboard(
+                    value=df_samenvatten_leaderboard,
+                    # select_columns=["Model"],
+                    search_columns=["Model"],
+                    # filter_columns=[],
+                    datatype=["markdown"]
+                )
+                export_samenvatting_button = gr.Button("📤 Export Samenvatting leaderboard naar Excel")
+        
+            with gr.Accordion(label="Vereenvoudigen Leaderboard", open=False):
+                    model_links = {
+                        "model_name": ["Leesplank Noot", "Llama 3.2-3b", "Claude Sonet", "GPT4o"],
+                        "links": ["link", "link", "link", "link"]
+                    }
+                    
+                    df_vereenvoudigen_leaderboard = pd.DataFrame({
+                    "Model": [f'<a target="_blank" href="{model_links["links"][0]}">{model_links["model_name"][0]}</a>', 
+                                f'<a target="_blank" href="{model_links["links"][1]}">{model_links["model_name"][1]}</a>',
+                                f'<a target="_blank" href="{model_links["links"][2]}">{model_links["model_name"][2]}</a>',
+                                f'<a target="_blank" href="{model_links["links"][3]}">{model_links["model_name"][3]}</a>'],
+                    "Win%": [64, 39, 21, 0],
+                    "Motivatie": ["readablility, clarity, accuracy, consistency", "accuracy, conciseness, engagement", "conciseness, clarity, comprehensiveness", "lack of accuracy"],
+                    "€/M": [0.20, 0.52, 0.13, 0.20],
+                    "Token s/s": [624, 238, 1086, 527],
+                    "ping (ms)": [75, 105, 40, 75],
+                    "Race bias": [42.1, 48.6, 35.6, 41.8],
+                    "Political bias": [32.6, 21.4, 19.7, 35.2],
+                    "Type": ["Self hosted", "Hosted", "Self hosted", "Self hosted"],
+                    })
+
+                    Leaderboard(
+                        value=df_vereenvoudigen_leaderboard,
+                        # select_columns=["Model"],
+                        search_columns=["Model"],
+                        # filter_columns=[],
+                        datatype=["markdown"]
+                    )
+                    export_samenvatting_button = gr.Button("📤 Export Vereenvoudigen leaderboard naar Excel")
+
+            with gr.Accordion(label="Classificatie Leaderboard", open=False):
+                gr.Textbox("")
+            
+            with gr.Accordion(label="Standaardiseren Leaderboard", open=False):
+                gr.Textbox("")
 
 
 
