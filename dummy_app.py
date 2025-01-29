@@ -69,6 +69,8 @@ def set_usecase(value):
     # Raise an error if an unsupported use case is provided
     else:
         raise ValueError("Invalid use case value")
+    
+    return change_tab(1)
 
 
 # Function to switch tabs after selecting usecase and pressing the continue button
@@ -241,7 +243,7 @@ with (gr.Blocks() as demo):
             with gr.Row():
                 select_use_case_ja_button = gr.Button("Ja")
                 select_use_case_nee_button = gr.Button("Nee")
-            select_use_case_ja_button.click(change_tab, gr.Number(1, visible=False), tabs)
+            select_use_case_ja_button.click(fn=lambda: set_usecase('samenvatten'), inputs=[], outputs=tabs)
             select_use_case_nee_button.click(clear_statement, statement, statement)
 
         # Second tab for Testing the usecase
