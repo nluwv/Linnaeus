@@ -32,6 +32,19 @@ feedback = None
 stored_user_feedback = None
 list_other_use_cases = ["classificatie", "standaardiseren", "doelgroep-herschrijven", "brainstorming", "proofreading", "metadateren"]
 
+# Global variables for dummy use 
+aangedragen_door = None
+beoordelingen = None
+uniek = None
+best = None
+forks = None
+lijn = None
+specialisatie = None
+_type = None
+impact = None
+sensitiviteit = None
+
+
 # Function to set the use case
 def set_usecase(value):
     """
@@ -49,17 +62,41 @@ def set_usecase(value):
         ValueError: If the provided use case value is invalid.
     """
 
-    global prompt, stored_usecase
+    global prompt, stored_usecase, aangedragen_door, beoordelingen, uniek, best, forks, lijn, specialisatie, _type, impact, sensitiviteit
     
     # Set the use case to "samenvatten" and assign the corresponding prompt
     if value == "samenvatten":
         stored_usecase = "samenvatten"
         prompt = samenvatten_prompt
 
+        # dummy
+        aangedragen_door = "SVB"
+        beoordelingen = 154
+        uniek = 13
+        forks = 2
+        best = 5
+        lijn = 2
+        specialisatie = 1
+        _type = "Summ"
+        impact = 2
+        sensitiviteit = "S"
+
     # Set the use case to "vereenvoudigen" and assign the corresponding prompt
     elif value == "vereenvoudigen":
         stored_usecase = "vereenvoudigen"
         prompt = vereenvoudigen_prompt
+
+        # dummy
+        aangedragen_door = "SVB"
+        beoordelingen = 210
+        uniek = 18
+        forks = 2
+        best = 9
+        lijn = 1
+        specialisatie = 1
+        _type = "Rewrite"
+        impact = 3
+        sensitiviteit = "S"
     
     elif value in list_other_use_cases:
         stored_usecase = "anders"
@@ -68,8 +105,6 @@ def set_usecase(value):
     # Raise an error if an unsupported use case is provided
     else:
         raise ValueError("Invalid use case value")
-
-    return change_tab(1)
 
 
 # Function to switch tabs after selecting usecase and pressing the continue button
@@ -180,7 +215,7 @@ with (gr.Blocks() as demo):
     with gr.Tabs() as tabs:
 
         # First tab for selecting the use case
-        with gr.TabItem(" Select Usecase", id="Select_Usecases"):
+        with gr.TabItem(" Select Usecase 🔎", id="Select_Usecases"):
             link = "https://huggingface.co/"
             tijdelijk = f'<a target="_blank" href="{link}">{"Samenvatten"}</a>'
             df = pd.DataFrame({
@@ -242,17 +277,17 @@ with (gr.Blocks() as demo):
             with gr.Row():
                 select_use_case_ja_button = gr.Button("Ja")
                 select_use_case_nee_button = gr.Button("Nee")
-            select_use_case_ja_button.click(fn=lambda: set_usecase('samenvatten'), inputs=[], outputs=tabs)
+            select_use_case_ja_button.click(change_tab, gr.Number(1, visible=False), tabs)
             select_use_case_nee_button.click(clear_statement, statement, statement)
 
         # Second tab for Testing the usecase
         with gr.TabItem("Test Usecase 🚀", id=1):
 
-            metadata = [[f"Aangedragen door: {''}", "Lijn: "],
-                        ["Beoordelingen: ", "Specialisatie: "], 
-                        ["Uniek: ", "Type: "],
-                        ["Fors: ", "Impact: "],
-                        ["Best: ", "Sensitiviteit: "]]
+            metadata = [[f"Aangedragen door: {aangedragen_door}", f"Lijn: {lijn}"],
+                        [f"Beoordelingen: {beoordelingen}", f"Specialisatie: {specialisatie}"], 
+                        [f"Uniek: {uniek}", f"Type: {_type}"],
+                        [f"Forks: {forks}", f"Impact: {impact}"],
+                        [f"Best: {best}", f"Sensitiviteit: {sensitiviteit}"]]
             df_metadata = pd.DataFrame(metadata)
 
             styled_table = df_metadata.style.hide(axis="index").hide(axis='columns').set_table_styles(
