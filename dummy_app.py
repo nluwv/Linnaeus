@@ -295,7 +295,14 @@ with (gr.Blocks() as demo):
 
             with gr.Accordion(label="Omschrijving en metadata", 
                               open=False):
-                gr.HTML(styled_table)
+                with gr.Row():
+                    gr.HTML(styled_table)
+                    gr.Button("Open in VSCode", icon="https://th.bing.com/th?q=vs+Code+Logo+Black+Background+Small&w=120&h=120&c=1&rs=1&qlt=90&cb=1&pid=InlineBlock&mkt=nl-NL&cc=NL&setlang=en&adlt=moderate&t=1&mw=247", 
+                              variant='huggingface')
+                    # gr.Button("Open in Colab", icon="data:image/png;base64,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", 
+                    #           variant='huggingface')
+                    gr.Markdown()
+                    gr.Markdown()
 
             # Two Text boxes to display the models output
             with gr.Row():
@@ -333,7 +340,7 @@ with (gr.Blocks() as demo):
             submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
 
         with gr.Tab("Leader board 🏆", id=2):
-            with gr.Accordion(label="Samenvatten Leaderboard", open=True):
+            with gr.Blocks():
                 model_links = {
                     "model_name": ["Llama 3.2-3b", "GPT4o", "Claude Sonet", "Leesplank Noot"],
                     "links": ["link", "link", "link", "link"]
@@ -363,41 +370,35 @@ with (gr.Blocks() as demo):
                 )
                 export_samenvatting_button = gr.Button("📤 Export Samenvatting leaderboard naar Excel")
         
-            with gr.Accordion(label="Vereenvoudigen Leaderboard", open=False):
-                    model_links = {
-                        "model_name": ["Leesplank Noot", "Llama 3.2-3b", "Claude Sonet", "GPT4o"],
-                        "links": ["link", "link", "link", "link"]
-                    }
+            # with gr.Accordion(label="Vereenvoudigen Leaderboard", open=False):
+            #         model_links = {
+            #             "model_name": ["Leesplank Noot", "Llama 3.2-3b", "Claude Sonet", "GPT4o"],
+            #             "links": ["link", "link", "link", "link"]
+            #         }
                     
-                    df_vereenvoudigen_leaderboard = pd.DataFrame({
-                    "Model": [f'<a target="_blank" href="{model_links["links"][0]}">{model_links["model_name"][0]}</a>', 
-                                f'<a target="_blank" href="{model_links["links"][1]}">{model_links["model_name"][1]}</a>',
-                                f'<a target="_blank" href="{model_links["links"][2]}">{model_links["model_name"][2]}</a>',
-                                f'<a target="_blank" href="{model_links["links"][3]}">{model_links["model_name"][3]}</a>'],
-                    "Win%": [64, 39, 21, 0],
-                    "Motivatie": ["readablility, clarity, accuracy, consistency", "accuracy, conciseness, engagement", "conciseness, clarity, comprehensiveness", "lack of accuracy"],
-                    "€/M": [0.20, 0.52, 0.13, 0.20],
-                    "Token s/s": [624, 238, 1086, 527],
-                    "ping (ms)": [75, 105, 40, 75],
-                    "Race bias": [42.1, 48.6, 35.6, 41.8],
-                    "Political bias": [32.6, 21.4, 19.7, 35.2],
-                    "Type": ["Self hosted", "Hosted", "Self hosted", "Self hosted"],
-                    })
+            #         df_vereenvoudigen_leaderboard = pd.DataFrame({
+            #         "Model": [f'<a target="_blank" href="{model_links["links"][0]}">{model_links["model_name"][0]}</a>', 
+            #                     f'<a target="_blank" href="{model_links["links"][1]}">{model_links["model_name"][1]}</a>',
+            #                     f'<a target="_blank" href="{model_links["links"][2]}">{model_links["model_name"][2]}</a>',
+            #                     f'<a target="_blank" href="{model_links["links"][3]}">{model_links["model_name"][3]}</a>'],
+            #         "Win%": [64, 39, 21, 0],
+            #         "Motivatie": ["readablility, clarity, accuracy, consistency", "accuracy, conciseness, engagement", "conciseness, clarity, comprehensiveness", "lack of accuracy"],
+            #         "€/M": [0.20, 0.52, 0.13, 0.20],
+            #         "Token s/s": [624, 238, 1086, 527],
+            #         "ping (ms)": [75, 105, 40, 75],
+            #         "Race bias": [42.1, 48.6, 35.6, 41.8],
+            #         "Political bias": [32.6, 21.4, 19.7, 35.2],
+            #         "Type": ["Self hosted", "Hosted", "Self hosted", "Self hosted"],
+            #         })
 
-                    Leaderboard(
-                        value=df_vereenvoudigen_leaderboard,
-                        # select_columns=["Model"],
-                        search_columns=["Model"],
-                        # filter_columns=[],
-                        datatype=["markdown"]
-                    )
-                    export_samenvatting_button = gr.Button("📤 Export Vereenvoudigen leaderboard naar Excel")
-
-            with gr.Accordion(label="Classificatie Leaderboard", open=False):
-                gr.Textbox("")
-            
-            with gr.Accordion(label="Standaardiseren Leaderboard", open=False):
-                gr.Textbox("")
+            #         Leaderboard(
+            #             value=df_vereenvoudigen_leaderboard,
+            #             # select_columns=["Model"],
+            #             search_columns=["Model"],
+            #             # filter_columns=[],
+            #             datatype=["markdown"]
+            #         )
+            #         export_samenvatting_button = gr.Button("📤 Export Vereenvoudigen leaderboard naar Excel")
 
 
 
