@@ -61,7 +61,6 @@ def set_usecase(value):
         stored_usecase = "vereenvoudigen"
         prompt = vereenvoudigen_prompt
     
-    
     elif value in list_other_use_cases:
         stored_usecase = "anders"
         prompt = anders_prompt
@@ -69,7 +68,7 @@ def set_usecase(value):
     # Raise an error if an unsupported use case is provided
     else:
         raise ValueError("Invalid use case value")
-    
+
     return change_tab(1)
 
 
@@ -247,7 +246,23 @@ with (gr.Blocks() as demo):
             select_use_case_nee_button.click(clear_statement, statement, statement)
 
         # Second tab for Testing the usecase
-        with gr.TabItem("Test Usecase", id=1):
+        with gr.TabItem("Test Usecase 🚀", id=1):
+
+            metadata = [[f"Aangedragen door: {''}", "Lijn: "],
+                        ["Beoordelingen: ", "Specialisatie: "], 
+                        ["Uniek: ", "Type: "],
+                        ["Fors: ", "Impact: "],
+                        ["Best: ", "Sensitiviteit: "]]
+            df_metadata = pd.DataFrame(metadata)
+
+            styled_table = df_metadata.style.hide(axis="index").hide(axis='columns').set_table_styles(
+                [{"selector": "table", "props": [("border", "none")],
+                  "selector": "td", "props": [("padding", "5px")]}]
+            ).to_html()
+
+            with gr.Accordion(label="Omschrijving en metadata", 
+                              open=False):
+                gr.HTML(styled_table)
 
             # Two Text boxes to display the models output
             with gr.Row():
@@ -258,7 +273,7 @@ with (gr.Blocks() as demo):
             use_case_input = gr.Textbox(label="Use Case Input", lines=2, placeholder="Type message hier...")
 
             # Define the submit button
-            submit_button = gr.Button("Submit")
+            submit_button = gr.Button("Submit 🚀")
 
             # Button action to start generating model responses when user submits their input
             submit_button.click(fn=lambda user_message: handle_submit(user_message),
@@ -267,25 +282,24 @@ with (gr.Blocks() as demo):
 
             # Add the feedback buttons
             with gr.Row():
-                model_a_better_button = gr.Button("Model A is better")
-                model_b_better_button = gr.Button("Model B is better")
-                tie_button = gr.Button("Tie")
-                both_bad_button = gr.Button("Both are bad")
+                model_a_better_button = gr.Button("Model A is better 👈")
+                tie_button = gr.Button("Tie 🤝")
+                model_b_better_button = gr.Button("Model B is better 👉")
 
             # Feedback button actions
             model_a_better_button.click(fn=lambda: set_feedback("Model A is better"), inputs=[], outputs=[])
             model_b_better_button.click(fn=lambda: set_feedback("Model B is better"), inputs=[], outputs=[])
             tie_button.click(fn=lambda: set_feedback("Tie"), inputs=[], outputs=[])
-            both_bad_button.click(fn=lambda: set_feedback("Both are bad"), inputs=[], outputs=[])
+            # both_bad_button.click(fn=lambda: set_feedback("Both are bad"), inputs=[], outputs=[])
 
             # Feedback text field
             user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
 
             # Button action to intiate the saving of all global variables to the database
-            submit_feedback_button = gr.Button("Submit feedback")
+            submit_feedback_button = gr.Button("Submit feedback 📝")
             submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
 
-        with gr.Tab("Leader board"):
+        with gr.Tab("Leader board 🏆", id=2):
             leader_board_button = gr.Button("Leader board")
 
             gr.Markdown("""
