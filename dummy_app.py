@@ -43,6 +43,14 @@ specialisatie = None
 _type = None
 impact = None
 sensitiviteit = None
+data = {
+    '': ['Aangedragen door: ', aangedragen_door, 'Lijn: ', lijn], 
+    '': ['Beoordelingen: ', beoordelingen, 'Specialisatie: ', specialisatie], 
+    '': ['Uniek: ', uniek, 'Type: ', _type],
+    '': ['Impact: ', impact, 'Sensitiviteit: ', sensitiviteit]
+}
+data_df = pd.DataFrame(data)
+metadata_df = gr.DataFrame(data_df, datatype=["markdown"])
 
 
 # Function to set the use case
@@ -61,7 +69,7 @@ def set_usecase(value):
     Raises:
         ValueError: If the provided use case value is invalid.
     """
-
+    print(value)
     global prompt, stored_usecase, aangedragen_door, beoordelingen, uniek, best, forks, lijn, specialisatie, _type, impact, sensitiviteit
     
     # Set the use case to "samenvatten" and assign the corresponding prompt
@@ -70,16 +78,16 @@ def set_usecase(value):
         prompt = samenvatten_prompt
 
         # dummy
-        aangedragen_door = "SVB"
-        beoordelingen = 154
-        uniek = 13
-        forks = 2
-        best = 5
-        lijn = 2
-        specialisatie = 1
-        _type = "Summ"
-        impact = 2
-        sensitiviteit = "S"
+        # aangedragen_door = "SVB"
+        # beoordelingen = 154
+        # uniek = 13
+        # forks = 2
+        # best = 5
+        # lijn = 2
+        # specialisatie = 1
+        # _type = "Summ"
+        # impact = 2
+        # sensitiviteit = "S"
 
     # Set the use case to "vereenvoudigen" and assign the corresponding prompt
     elif value == "vereenvoudigen":
@@ -87,16 +95,16 @@ def set_usecase(value):
         prompt = vereenvoudigen_prompt
 
         # dummy
-        aangedragen_door = "SVB"
-        beoordelingen = 210
-        uniek = 18
-        forks = 2
-        best = 9
-        lijn = 1
-        specialisatie = 1
-        _type = "Rewrite"
-        impact = 3
-        sensitiviteit = "S"
+        # aangedragen_door = "SVB"
+        # beoordelingen = 210
+        # uniek = 18
+        # forks = 2
+        # best = 9
+        # lijn = 1
+        # specialisatie = 1
+        # _type = "Rewrite"
+        # impact = 3
+        # sensitiviteit = "S"
     
     elif value in list_other_use_cases:
         stored_usecase = "anders"
@@ -105,6 +113,14 @@ def set_usecase(value):
     # Raise an error if an unsupported use case is provided
     else:
         raise ValueError("Invalid use case value")
+    
+    # data = {
+    #     '': ['Aangedragen door: ', aangedragen_door, 'Lijn: ', lijn], 
+    #     '': ['Beoordelingen: ', beoordelingen, 'Specialisatie: ', specialisatie], 
+    #     '': ['Uniek: ', uniek, 'Type: ', _type],
+    #     '': ['Impact: ', impact, 'Sensitiviteit: ', sensitiviteit]
+    # }
+    # return data
 
 
 # Function to switch tabs after selecting usecase and pressing the continue button
@@ -200,7 +216,10 @@ def on_select(value, evt: gr.SelectData) -> None:
     value = pd.DataFrame(value)
     row_index = evt.index[0]
     selected_element = value.loc[row_index,"Titel"]
+    # data = set_usecase(selected_element.lower()) # hier outputs meegeven
     set_usecase(selected_element.lower())
+    # data_df = pd.DataFrame(data)
+    # return f"Wilt u de use case '{selected_element}' selecteren?", data_df
     return f"Wilt u de use case '{selected_element}' selecteren?"
 
 def clear_statement(statement):
@@ -208,7 +227,12 @@ def clear_statement(statement):
     return statement
 
 # Create interface
-with (gr.Blocks() as demo):
+# with (gr.Blocks(css='.gr-dataframe th {display: none;}') as demo):
+with (gr.Blocks(css="""
+                .gr-dataframe table {border: none; backgorund-color: #f0f0f0;}
+                .gr-dataframe th, .gr-dataframe td {border: none; padding: 0px;}
+                .gr-dataframe th {display: none;}
+                """) as demo):
     gr.Markdown("## UWV Lineaus")
 
     # Create tabs to switch between different sections of the interfac
@@ -272,7 +296,7 @@ with (gr.Blocks() as demo):
             dataframe_output = gr.DataFrame(df, datatype=["markdown"])
             dropdown.change(fn=filter_data, inputs=dropdown, outputs=dataframe_output)
             statement = gr.Textbox(label="Use case selecteren")
-            dataframe_output.select(on_select, [dataframe_output], statement)
+            dataframe_output.select(on_select, [dataframe_output], outputs=[statement])
 
             with gr.Row():
                 select_use_case_ja_button = gr.Button("Ja")
@@ -282,22 +306,21 @@ with (gr.Blocks() as demo):
 
         # Second tab for Testing the usecase
         with gr.TabItem("Test Usecase 🚀", id=1):
+            
+            # Dummy metadata
+            data = {
+                'h1': ['**Aangedragen door:**', '**Beoordelingen:**', '**Uniek:**', '**Forks:**', '**Best:**'],
+                'h2': ['SVB', '210', '18', '3', '5'],
+                'h3': ['**Lijn:**', '**Specialisatie:**', '**Type:**', '**Impact:**', '**Sensitiviteit:**'],
+                'h4': ['1', '2', 'Rewrite', '1', 'S']
+            }
 
-            metadata = [[f"Aangedragen door: {aangedragen_door}", f"Lijn: {lijn}"],
-                        [f"Beoordelingen: {beoordelingen}", f"Specialisatie: {specialisatie}"], 
-                        [f"Uniek: {uniek}", f"Type: {_type}"],
-                        [f"Forks: {forks}", f"Impact: {impact}"],
-                        [f"Best: {best}", f"Sensitiviteit: {sensitiviteit}"]]
-            df_metadata = pd.DataFrame(metadata)
-
-            styled_table = df_metadata.style.hide(axis="index").hide(axis='columns').set_table_styles(
-                [{"selector": "table", "props": [("border", "none")],
-                  "selector": "td", "props": [("padding", "5px")]}]
-            ).to_html()
-
-            with gr.Accordion(label="Omschrijving en metadata", 
-                              open=False):
-                gr.HTML(styled_table)
+            with gr.Accordion(label="Omschrijving en metadata", open=False):
+                df_meta = pd.DataFrame(data)
+                gr.DataFrame(df_meta,
+                             elem_classes='gr-dataframe',
+                             datatype=["markdown"] * len(df_meta.columns),
+                             interactive=False)
 
             # Two Text boxes to display the models output
             with gr.Row():
@@ -315,6 +338,9 @@ with (gr.Blocks() as demo):
                                 inputs=[use_case_input],
                                 outputs=[model_a_output, model_b_output])
 
+            # Feedback text field
+            user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
+
             # Add the feedback buttons
             with gr.Row():
                 model_a_better_button = gr.Button("Model A is better 👈")
@@ -327,12 +353,12 @@ with (gr.Blocks() as demo):
             tie_button.click(fn=lambda: set_feedback("Tie"), inputs=[], outputs=[])
             # both_bad_button.click(fn=lambda: set_feedback("Both are bad"), inputs=[], outputs=[])
 
-            # Feedback text field
-            user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
+            # # Feedback text field
+            # user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
 
             # Button action to intiate the saving of all global variables to the database
-            submit_feedback_button = gr.Button("Submit feedback 📝")
-            submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
+            # submit_feedback_button = gr.Button("Submit feedback 📝")
+            # submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
 
         with gr.Tab("Leader board 🏆", id=2):
             leader_board_button = gr.Button("Leader board")
