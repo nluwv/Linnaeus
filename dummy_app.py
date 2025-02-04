@@ -331,24 +331,24 @@ with (gr.Blocks(css="""
                 model_b_output = gr.Textbox(label="Model B Output", lines=10, interactive=False)
 
             # Textbox for user input
-            use_case_input = gr.Textbox(label="Use Case Input", lines=2, placeholder="Type message hier...")
+            use_case_input = gr.Textbox(label="Use Case Input", interactive=True, lines=2, placeholder="Type message hier...")
 
             # Define the submit button
-            submit_button = gr.Button("Submit 🚀")
+            # submit_button = gr.Button("Submit 🚀")
 
             # Button action to start generating model responses when user submits their input
-            submit_button.click(fn=lambda user_message: handle_submit(user_message),
+            use_case_input.submit(fn=lambda user_message: handle_submit(user_message),
                                 inputs=[use_case_input],
                                 outputs=[model_a_output, model_b_output])
-
-            # Feedback text field
-            user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
-
+            
             # Add the feedback buttons
             with gr.Row():
                 model_a_better_button = gr.Button("Model A is better 👈")
                 tie_button = gr.Button("Tie 🤝")
                 model_b_better_button = gr.Button("Model B is better 👉")
+
+            # # Feedback text field
+            # user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
 
             # Feedback button actions
             model_a_better_button.click(fn=lambda: set_feedback("Model A is better"), inputs=[], outputs=[])
@@ -356,12 +356,12 @@ with (gr.Blocks(css="""
             tie_button.click(fn=lambda: set_feedback("Tie"), inputs=[], outputs=[])
             # both_bad_button.click(fn=lambda: set_feedback("Both are bad"), inputs=[], outputs=[])
 
-            # # Feedback text field
-            # user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
+            # Feedback text field
+            user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
 
             # Button action to intiate the saving of all global variables to the database
-            # submit_feedback_button = gr.Button("Submit feedback 📝")
-            # submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
+            submit_feedback_button = gr.Button("Submit feedback 📝")
+            submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
 
         with gr.Tab("Leader board 🏆", id=2):
             with gr.Blocks():
