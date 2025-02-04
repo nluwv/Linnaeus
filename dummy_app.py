@@ -112,7 +112,7 @@ def set_usecase(value):
     
     # Raise an error if an unsupported use case is provided
     else:
-        raise ValueError("Invalid use case value")
+        raise ValueError("Ongeldige usecase waarde")
     
     # data = {
     #     '': ['Aangedragen door: ', aangedragen_door, 'Lijn: ', lijn], 
@@ -184,7 +184,7 @@ def set_feedback(value):
     feedback = value
 
     # Print the updated feedback for confirmation
-    print(f"Feedback set to: {feedback}")
+    print(f"Gegeven feedback: {feedback}")
 
 
 # Function to handle feedback submission
@@ -210,7 +210,7 @@ def handle_feedback(feedback_motivation):
                         stored_model_a_response, stored_model_b_response, feedback, feedback_motivation)
 
         # Confirm successful logging of feedback
-        print("Feedback logged successfully.")
+        print("Feedback succesvol geregistreerd.")
 
 def on_select(value, evt: gr.SelectData) -> None:
     value = pd.DataFrame(value)
@@ -227,19 +227,18 @@ def clear_statement(statement):
     return statement
 
 # Create interface
-# with (gr.Blocks(css='.gr-dataframe th {display: none;}') as demo):
 with (gr.Blocks(css="""
                 .gr-dataframe table {border: none; backgorund-color: #f0f0f0;}
                 .gr-dataframe th, .gr-dataframe td {border: none; padding: 0px;}
                 .gr-dataframe th {display: none;}
                 """) as demo):
-    gr.Markdown("## UWV Lineaus")
+    gr.Markdown("## UWV Linneaus")
 
     # Create tabs to switch between different sections of the interfac
     with gr.Tabs() as tabs:
 
         # First tab for selecting the use case
-        with gr.TabItem(" Select Usecase 🔎", id="Select_Usecases"):
+        with gr.TabItem(" Selecteer Usecase 🔎", id="Select_Usecases"):
             df = pd.DataFrame({
             "Titel": ["Samenvatten", "Vereenvoudigen", "Classificatie", "Standaardiseren", "Doelgroep-herschrijven", "Brainstorming", "Proofreading", "Metadateren"],
             "Eigenaar": ["A", "A", "B", "A", "C", "B", "D", "C"],
@@ -272,28 +271,28 @@ with (gr.Blocks(css="""
                     return df
                 if choice == "🔥 Hot":
                     return sort_hot(df)
-                elif choice == "🌱 New":
+                elif choice == "🌱 Nieuw":
                     return sort_new(df)
                 elif choice == "🚀 Trending":
                     return sort_trending(df)
-                elif choice == "⭐ Best":
+                elif choice == "⭐ Beste":
                     return sort_best(df)
-                elif choice == "🤔 Controversial":
+                elif choice == "🤔 Controversieel":
                     return sort_controversial(df)
-                elif choice == "🌐 Broadness":
+                elif choice == "🌐 Algemeenheid":
                     return sort_broadness(df)
                 else:
                     return df
 
             gr.Markdown("### Filter")
             dropdown = gr.Dropdown(
-                choices=["-", "🔥 Hot", "🌱 New", "🚀 Trending", "⭐ Best", "🤔 Controversial", "🌐 Broadness"], 
-                label="Choose Filter: 🔥 Hot - 🌱 New - 🚀 Trending - ⭐ Best - 🤔 Controversial - 🌐 Broadness"
+                choices=["-", "🔥 Hot", "🌱 Nieuw", "🚀 Trending", "⭐ Beste", "🤔 Controversieel", "🌐 Algemeenheid"], 
+                label="Kies Filter: 🔥 Hot - 🌱 Nieuw - 🚀 Trending - ⭐ Beste - 🤔 Controversieel - 🌐 Algemeenheid"
             )
             
             dataframe_output = gr.DataFrame(df, datatype=["markdown"])
             dropdown.change(fn=filter_data, inputs=dropdown, outputs=dataframe_output)
-            statement = gr.Textbox(label="Use case selecteren")
+            statement = gr.Textbox(label="Usecase selecteren")
             dataframe_output.select(on_select, [dataframe_output], outputs=[statement])
 
             with gr.Row():
@@ -327,10 +326,7 @@ with (gr.Blocks(css="""
                 model_b_output = gr.Textbox(label="Model B Output", lines=10, interactive=False)
 
             # Textbox for user input
-            use_case_input = gr.Textbox(label="Use Case Input", interactive=True, lines=2, placeholder="Type message hier...")
-
-            # Define the submit button
-            # submit_button = gr.Button("Submit 🚀")
+            use_case_input = gr.Textbox(label="Invoer Usecase", interactive=True, lines=2, placeholder="Type bericht hier...")
 
             # Button action to start generating model responses when user submits their input
             use_case_input.submit(fn=lambda user_message: handle_submit(user_message),
@@ -339,27 +335,27 @@ with (gr.Blocks(css="""
             
             # Add the feedback buttons
             with gr.Row():
-                model_a_better_button = gr.Button("Model A is better 👈")
-                tie_button = gr.Button("Tie 🤝")
-                model_b_better_button = gr.Button("Model B is better 👉")
+                model_a_better_button = gr.Button("👈 Model A is beter")
+                tie_button = gr.Button("Gelijkspel 🤝")
+                model_b_better_button = gr.Button("Model B is beter 👉")
 
             # # Feedback text field
             # user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
 
             # Feedback button actions
-            model_a_better_button.click(fn=lambda: set_feedback("Model A is better"), inputs=[], outputs=[])
-            model_b_better_button.click(fn=lambda: set_feedback("Model B is better"), inputs=[], outputs=[])
-            tie_button.click(fn=lambda: set_feedback("Tie"), inputs=[], outputs=[])
+            model_a_better_button.click(fn=lambda: set_feedback("Model A is beter"), inputs=[], outputs=[])
+            model_b_better_button.click(fn=lambda: set_feedback("Model B is beter"), inputs=[], outputs=[])
+            tie_button.click(fn=lambda: set_feedback("Gelijkspel"), inputs=[], outputs=[])
             # both_bad_button.click(fn=lambda: set_feedback("Both are bad"), inputs=[], outputs=[])
 
             # Feedback text field
             user_feedback_motivation = gr.Textbox(label="Feedback", lines=2, placeholder="Type feedback hier...")
 
             # Button action to intiate the saving of all global variables to the database
-            submit_feedback_button = gr.Button("Submit feedback 📝")
+            submit_feedback_button = gr.Button("Verstuur Feedback 📝")
             submit_feedback_button.click(fn=handle_feedback, inputs=[user_feedback_motivation], outputs=[])
 
-        with gr.Tab("Leader board 🏆", id=2):
+        with gr.Tab("Leaderboard 🏆", id=2):
             with gr.Blocks():
                 model_links = {
                     "model_name": ["Llama 3.2-3b", "GPT4o", "Claude Sonet", "Leesplank Noot"],
@@ -378,17 +374,15 @@ with (gr.Blocks(css="""
                 "ping (ms)": [75, 105, 40, 75],
                 "Race bias": [42.1, 48.6, 35.6, 41.8],
                 "Political bias": [32.6, 21.4, 19.7, 35.2],
-                "Type": ["Self hosted", "Hosted", "Self hosted", "Self hosted"],
+                "Type": ["Self hosted", "Hosted online", "Self hosted", "Self hosted"],
                 })
 
                 Leaderboard(
                     value=df_samenvatten_leaderboard,
-                    # select_columns=["Model"],
                     search_columns=["Model"],
-                    # filter_columns=[],
                     datatype=["markdown"]
                 )
-                export_samenvatting_button = gr.Button("📤 Export Samenvatting leaderboard naar Excel")
+                export_samenvatting_button = gr.Button("📤 Export Samenvatten leaderboard naar Excel")
         
             # with gr.Accordion(label="Vereenvoudigen Leaderboard", open=False):
             #         model_links = {
