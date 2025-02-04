@@ -318,7 +318,8 @@ with (gr.Blocks(css="""
                              elem_classes='gr-dataframe',
                              datatype=["markdown"] * len(df_meta.columns),
                              interactive=False)
-                gr.Button("Open in Colab", icon="img/colab-color.png", variant='huggingface')
+                gr.Button("Open in JupterLab", icon="img/jupyter-svgrepo-com.png", variant='huggingface')
+
 
             # Two Text boxes to display the models output
             with gr.Row():
