@@ -1,4 +1,5 @@
 import gradio as gr
+import pandas as pd
 
 from src.llm import LLMManager
 from src.db.feedback import FeedbackDB
@@ -24,6 +25,25 @@ class InterfaceManager:
         self.llm_manager = LLMManager(config.get_models())
         self.feedback_handler = FeedbackHandler(FeedbackDB())
         self.demo = self._create_interface()
+
+    def get_usecases_table(self):
+        """
+        Reads the usecases from the Excel file and returns them as a pandas DataFrame.
+
+        Returns:
+            pd.DataFrame: DataFrame containing the usecases.
+        """
+        return pd.read_excel("data/usecases.xlsx")
+
+    def _clear_statement(self):
+        return ""
+
+    def _on_select(self, value, evt: gr.SelectData) -> str:
+        value = pd.DataFrame(value)
+        row_index = evt.index[0]
+        selected_element = value.loc[row_index,"Titel"]
+        self.usecase_manager.set_usecase(selected_element.lower())
+        return f"Wilt u de use case '{selected_element}' selecteren?"
 
     def _change_tab(self, _id: gr.Number) -> gr.Tabs:
         """
@@ -67,44 +87,67 @@ class InterfaceManager:
             tabs (gr.Tabs): The tabs component for navigation between tabs.
         """
         # Display descriptions for the two use cases (Samenvatten and Vereenvoudigen)
-        with gr.Row():
-            gr.Textbox(
-                label="Usecase Samenvatten",
-                lines=5,
-                interactive=False,
-                value=self.usecase_manager.get_samenvatten_description
-            )
-            gr.Textbox(
-                label="Usecase Vereenvoudigen",
-                lines=5,
-                interactive=False,
-                value=self.usecase_manager.get_vereenvoudigen_description
-            )
+        with gr.TabItem(" Selecteer Usecase 🔎", id="Select_Usecases"):
+            df = self.get_usecases_table()
+
+            # Filter functions
+            def sort_hot(df):
+                return df.sort_values(by=["Impact", "Sensitiviteit"], ascending=[False, True])
+            def sort_new(df):
+                return df.sort_values(by="U", ascending=False)
+            def sort_trending(df):
+                return df.sort_values(by="Impact", ascending=False)
+            def sort_best(df):
+                return df.sort_values(by=["Nauwkeurigheid", "Impact"], ascending=[False, False])
+            def sort_controversial(df):
+                return df.sort_values(by=["Spec", "Lijn"], ascending=[False, True])
+            def sort_broadness(df):
+                return df.sort_values(by="Lijn", key=lambda x: x.str.count(',') + 1, ascending=False)
 
 
-        # Buttons for selecting one of the usecases
-        with gr.Row():
-            select_samenvatten_button = gr.Button("Selecteer 'Samenvatten' use case")
-            select_vereenvoudigen_button = gr.Button("Selecteer 'Vereenvoudigen' use case")
+            def filter_data(choice):
+                if choice == "-":
+                    return df
+                if choice == "🔥 Hot":
+                    return sort_hot(df)
+                elif choice == "🌱 Nieuw":
+                    return sort_new(df)
+                elif choice == "🚀 Trending":
+                    return sort_trending(df)
+                elif choice == "⭐ Beste":
+                    return sort_best(df)
+                elif choice == "🤔 Controversieel":
+                    return sort_controversial(df)
+                elif choice == "🌐 Algemeenheid":
+                    return sort_broadness(df)
+                else:
+                    return df
 
-        # Output textbox to display selected prompt
-        selected_prompt = gr.Textbox(label="Selected prompt", lines=2, interactive=False)
-
-        # Button actions to update the selected prompt textbox and use_case_input label
-        select_samenvatten_button.click( # pylint:disable=E1101
-            fn=lambda: self.usecase_manager.set_usecase('samenvatten'),
-            inputs=[],
-            outputs=selected_prompt
+        gr.Markdown("### Filter")
+        dropdown = gr.Dropdown(
+            choices=["-", "🔥 Hot", "🌱 Nieuw", "🚀 Trending", "⭐ Beste", "🤔 Controversieel", "🌐 Algemeenheid"],
+            label="Kies Filter: 🔥 Hot - 🌱 Nieuw - 🚀 Trending - ⭐ Beste - 🤔 Controversieel - 🌐 Algemeenheid"
         )
-        select_vereenvoudigen_button.click( # pylint:disable=E1101
-            fn=lambda: self.usecase_manager.set_usecase('vereenvoudigen'),
-            inputs=[],
-            outputs=selected_prompt
+
+        dataframe_output = gr.DataFrame(df, datatype=["markdown"])
+        dropdown.change(fn=filter_data, inputs=dropdown, outputs=dataframe_output) # pylint:disable=E1101
+        statement = gr.Textbox(label="Usecase selecteren")
+        dataframe_output.select( # pylint:disable=E1101
+            self._on_select,
+            [dataframe_output],
+            outputs=[statement]
         )
 
-        # Continue button
-        continue_button = gr.Button("Continue")
-        continue_button.click(self._change_tab, inputs=gr.Number(1, visible=False), outputs=tabs) # pylint:disable=E1101
+        with gr.Row():
+            select_use_case_ja_button = gr.Button("Ja")
+            select_use_case_nee_button = gr.Button("Nee")
+
+        select_use_case_ja_button.click( # pylint:disable=E1101
+            self._change_tab,
+            gr.Number(1, visible=False),
+            tabs
+        )
+        select_use_case_nee_button.click(self._clear_statement, [], statement) # pylint:disable=E1101
 
     def _create_test_usecase_tab(self):
         """
