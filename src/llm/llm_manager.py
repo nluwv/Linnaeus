@@ -26,6 +26,8 @@ class LLMManager:
             models (list): List of LLMBase model instances.
         """
         self.models = models
+        self.model_a_name = None
+        self.model_b_name = None
 
     def chat_with_models(self, message, prompt, history=None):
         """
@@ -45,8 +47,7 @@ class LLMManager:
         # Randomly select 2 models from the list
         selected_models = random.sample(self.models, 2)
 
-        model_a_name, model_a_response = None, None
-        model_b_name, model_b_response = None, None
+        model_a_response, model_b_response = None, None
 
         for i, model in enumerate(selected_models):
             model_name = model.__class__.__name__
@@ -55,10 +56,10 @@ class LLMManager:
 
             # Store the model names and responses
             if i == 0:
-                model_a_name = model_name
+                self.model_a_name = model_name
                 model_a_response = response
             else:
-                model_b_name = model_name
+                self.model_b_name = model_name
                 model_b_response = response
 
-        return model_a_name, model_b_name, model_a_response, model_b_response
+        return model_a_response, model_b_response
