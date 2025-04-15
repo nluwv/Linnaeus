@@ -31,7 +31,7 @@ class GPTModel(BaseLLM):
             str: The model's response content.
         """
         # OpenAI GPT API call
-        response = openai.ChatCompletion.create(
+        response = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
             max_tokens=1000

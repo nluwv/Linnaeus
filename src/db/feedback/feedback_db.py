@@ -14,7 +14,7 @@ class FeedbackDB(BaseDB):
     def __init__(
         self,
         table_name: str = "feedback",
-        db_path: str = persistent_path("feedback/database.db"),
+        db_path: str = persistent_path("database/database.db"),
     ):
         """
         Initializes the FeedbackDB class.
@@ -26,12 +26,12 @@ class FeedbackDB(BaseDB):
         """
         Creates a database to save any feedback given by the user.
         """
-        
+
         # Connect to SQLite database (if it doesn't exist, it will be created)
         db_dir = os.path.dirname(self._db_path)
         if not os.path.exists(db_dir):
             os.makedirs(db_dir)
-            
+
         create_table_query = f"""
         CREATE TABLE IF NOT EXISTS {self._table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

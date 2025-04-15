@@ -1,6 +1,5 @@
 from abc import abstractmethod
 import sqlite3
-import os
 import pandas as pd
 
 
@@ -28,10 +27,6 @@ class BaseDB:
         """
         Creates a database to save any feedback given by the user.
         """
-        # Connect to SQLite database (if it doesn't exist, it will be created)
-        db_dir = os.path.dirname(self._db_path)
-        if not os.path.exists(db_dir):
-            os.makedirs(db_dir)
 
     def create_entry(self, table):
         """
